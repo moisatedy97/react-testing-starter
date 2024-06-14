@@ -5,11 +5,8 @@ const TermsAndConditions = () => {
 
   return (
     <div>
-      <h1>Terms & Conditions</h1>
-      <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem,
-        delectus.
-      </p>
+      <h1>Terms and Conditions</h1>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem, delectus.</p>
       <div className="pb-3">
         <label htmlFor="agree">
           <input
