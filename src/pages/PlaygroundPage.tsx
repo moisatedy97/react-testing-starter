@@ -1,7 +1,7 @@
-import Onboarding from "../components/Onboarding";
+import ToastDemo from "../components/ToastDemo";
 
 const PlaygroundPage = () => {
-  return <Onboarding />;
+  return <ToastDemo />;
 };
 
 export default PlaygroundPage;
