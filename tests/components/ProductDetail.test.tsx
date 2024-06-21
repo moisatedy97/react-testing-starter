@@ -3,6 +3,7 @@ import ProductDetail from "../../src/components/ProductDetail";
 import { server } from "../moks/server";
 import { HttpResponse, http } from "msw";
 import { productFactory } from "../moks/db";
+import AllProviders from "../all-providers";
 
 describe("ProductDetail", () => {
   let productId: number;
@@ -16,7 +17,7 @@ describe("ProductDetail", () => {
   });
 
   const renderComponent = async (productId: number) => {
-    render(<ProductDetail productId={productId} />);
+    render(<ProductDetail productId={productId} />, { wrapper: AllProviders });
   };
 
   it("should render product with id", async () => {
@@ -42,7 +43,7 @@ describe("ProductDetail", () => {
 
   it("should render error for invalid productId", async () => {
     const productId = 0;
-    server.use(http.get(`/products/${productId}`, () => HttpResponse.json(null)));
+    server.use(http.get(`/products/${productId}`, () => HttpResponse.error()));
 
     renderComponent(productId);
 

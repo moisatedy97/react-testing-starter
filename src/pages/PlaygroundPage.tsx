@@ -1,7 +1,7 @@
-import ToastDemo from "../components/ToastDemo";
+import BrowseProductsPage from "./BrowseProductsPage";
 
 const PlaygroundPage = () => {
-  return <ToastDemo />;
+  return <BrowseProductsPage />;
 };
 
 export default PlaygroundPage;

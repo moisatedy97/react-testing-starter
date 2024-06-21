@@ -13,9 +13,7 @@ function BrowseProducts() {
   const [isCategoriesLoading, setCategoriesLoading] = useState(false);
   const [errorProducts, setErrorProducts] = useState("");
   const [errorCategories, setErrorCategories] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<
-    number | undefined
-  >();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -50,14 +48,15 @@ function BrowseProducts() {
   if (errorProducts) return <div>Error: {errorProducts}</div>;
 
   const renderCategories = () => {
-    if (isCategoriesLoading) return <Skeleton />;
-    if (errorCategories) return <div>Error: {errorCategories}</div>;
+    if (isCategoriesLoading)
+      return (
+        <div role="progressbar" aria-label="Loading categories">
+          <Skeleton />
+        </div>
+      );
+    if (errorCategories) return null;
     return (
-      <Select.Root
-        onValueChange={(categoryId) =>
-          setSelectedCategoryId(parseInt(categoryId))
-        }
-      >
+      <Select.Root onValueChange={(categoryId) => setSelectedCategoryId(parseInt(categoryId))}>
         <Select.Trigger placeholder="Filter by Category" />
         <Select.Content>
           <Select.Group>
@@ -79,9 +78,7 @@ function BrowseProducts() {
 
     if (errorProducts) return <div>Error: {errorProducts}</div>;
 
-    const visibleProducts = selectedCategoryId
-      ? products.filter((p) => p.categoryId === selectedCategoryId)
-      : products;
+    const visibleProducts = selectedCategoryId ? products.filter((p) => p.categoryId === selectedCategoryId) : products;
 
     return (
       <Table.Root>
@@ -92,7 +89,7 @@ function BrowseProducts() {
             <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body>
+        <Table.Body role={isProductsLoading ? "progressbar" : undefined} aria-label="Loading products">
           {isProductsLoading &&
             skeletons.map((skeleton) => (
               <Table.Row key={skeleton}>
