@@ -1,5 +1,7 @@
+import { Theme } from "@radix-ui/themes";
 import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { CartProvider } from "../src/providers/CartProvider";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -10,7 +12,13 @@ const client = new QueryClient({
 });
 
 function AllProviders({ children }: PropsWithChildren) {
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      <Theme>
+        <CartProvider>{children}</CartProvider>
+      </Theme>
+    </QueryClientProvider>
+  );
 }
 
 export default AllProviders;

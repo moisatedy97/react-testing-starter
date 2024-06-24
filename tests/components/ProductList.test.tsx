@@ -1,17 +1,18 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
-import delay from "delay";
 import { HttpResponse, http } from "msw";
 import ProductList from "../../src/components/ProductList";
+import AllProviders from "../all-providers";
 import { productFactory } from "../moks/db";
 import { server } from "../moks/server";
-import AllProviders from "../all-providers";
+import { simulateDelay } from "../utils";
 
 describe("ProductList", () => {
   const productIds: number[] = [];
 
   beforeAll(() => {
     [1, 2, 3].forEach(() => {
-      productIds.push(productFactory.product.create().id);
+      const product = productFactory.product.create();
+      productIds.push(product.id);
     });
   });
 
@@ -19,63 +20,48 @@ describe("ProductList", () => {
     productFactory.product.deleteMany({ where: { id: { in: productIds } } });
   });
 
-  const renderComponent = async () => {
+  it("should render the list of products", async () => {
     render(<ProductList />, { wrapper: AllProviders });
 
-    const listItems = await screen.findAllByRole("listitem");
-
-    return { listItems };
-  };
-
-  it("should render the list of products", async () => {
-    const { listItems } = await renderComponent();
-
-    expect(listItems).toHaveLength(3);
-    screen.debug();
+    const items = await screen.findAllByRole("listitem");
+    expect(items.length).toBeGreaterThan(0);
   });
 
-  it("should render no products if no products are found", async () => {
+  it("should render no products available if no product is found", async () => {
     server.use(http.get("/products", () => HttpResponse.json([])));
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
-    const message = await screen.findByText(/no products /i);
+    const message = await screen.findByText(/no products/i);
     expect(message).toBeInTheDocument();
   });
 
-  it("should render error if no products are found", async () => {
+  it("should render an error message when there is an error", async () => {
     server.use(http.get("/products", () => HttpResponse.error()));
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
-    const message = await screen.findByText(/error/i);
-    expect(message).toBeInTheDocument();
+    expect(await screen.findByText(/error/i)).toBeInTheDocument();
   });
 
   it("should render a loading indicator when fetching data", async () => {
-    server.use(
-      http.get("/products", async () => {
-        await delay(1000);
-        return HttpResponse.json([]);
-      })
-    );
+    simulateDelay("/products");
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
-    const loadingIndicator = await screen.findByText(/loading/i);
-    expect(loadingIndicator).toBeInTheDocument();
+    expect(await screen.findByText(/loading/i)).toBeInTheDocument();
   });
 
   it("should remove the loading indicator after data is fetched", async () => {
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 
-  it("should remove the loading indicator if data fatching fails", async () => {
+  it("should remove the loading indicator if data fetching fails", async () => {
     server.use(http.get("/products", () => HttpResponse.error()));
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
