@@ -5,10 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Product } from "../entities";
 import useCategories from "../hooks/useCategories";
-import {
-  ProductFormData,
-  productFormSchema,
-} from "../validationSchemas/productSchema";
+import { ProductFormData, productFormSchema } from "../validationSchemas/productSchema";
 import ErrorMessage from "./ErrorMessage";
 
 interface Props {
@@ -24,10 +21,10 @@ const ProductForm = ({ product, onSubmit }: Props) => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<ProductFormData>({
     defaultValues: product,
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema)
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -49,19 +46,14 @@ const ProductForm = ({ product, onSubmit }: Props) => {
     >
       <Box>
         <TextField.Root className="max-w-sm">
-          <TextField.Input placeholder="Name" {...register("name")} size="3" />
+          <TextField.Input aria-label="Name" placeholder="Name" {...register("name")} size="3" />
         </TextField.Root>
         <ErrorMessage error={errors.name} />
       </Box>
       <Box>
         <TextField.Root className="w-24">
           <TextField.Slot>$</TextField.Slot>
-          <TextField.Input
-            placeholder="Price"
-            maxLength={5}
-            size="3"
-            {...register("price", { valueAsNumber: true })}
-          />
+          <TextField.Input placeholder="Price" maxLength={5} size="3" {...register("price", { valueAsNumber: true })} />
         </TextField.Root>
         <ErrorMessage error={errors.price} />
       </Box>
@@ -79,10 +71,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
               <Select.Content>
                 <Select.Group>
                   {categories?.map((category) => (
-                    <Select.Item
-                      key={category.id}
-                      value={category.id.toString()}
-                    >
+                    <Select.Item key={category.id} value={category.id.toString()}>
                       {category.name}
                     </Select.Item>
                   ))}
